@@ -41,48 +41,53 @@
     </main>
 
 <script>
-    // 1. Esta función se activa cuando Blogger responde con los datos
-    function handleRecentPost(data) {
+    // 1. Definimos la función globalmente para que Blogger la encuentre
+    window.handleRecentPost = function(data) {
         const container = document.getElementById('recent-post');
         
-        // Verificamos si existen entradas
+        // Verificamos si hay publicaciones
         if (!data.feed.entry || data.feed.entry.length === 0) {
-            container.innerHTML = "<p>No hay publicaciones recientes.</p>";
+            container.innerHTML = "<p>No hay publicaciones recientes en el blog.</p>";
             return;
         }
 
-        const entry = data.feed.entry; // Tomamos solo la publicación más reciente
+        const entry = data.feed.entry;
         const title = entry.title.$t;
         const link = entry.link.find(l => l.rel === 'alternate').href;
         
-        // Buscamos la imagen (o usamos una por defecto si no hay)
+        // Imagen de portada (Placeholder si no hay imagen)
         let imgUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&auto=format&fit=crop';
         if (entry.media$thumbnail) {
-            // Mejoramos la calidad de la miniatura de Blogger
             imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
         }
 
-        // Construimos la tarjeta visualmente igual a la página de publicaciones
+        // Inyectamos el diseño en el HTML
         container.innerHTML = `
             <article class="post-card">
                 <div class="post-img" style="height: 200px; overflow: hidden;">
                     <img src="${imgUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div class="post-body">
-                    <span class="tag">Nueva entrada</span>
-                    <h2 style="font-size:1.4rem; margin:10px 0;">${title}</h2>
-                    <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.5rem;">
-                        He publicado un nuevo artículo en mi blog. Puedes leerlo haciendo clic en el botón de abajo.
+                    <span class="tag">Lo más reciente</span>
+                    <h2 style="font-size:1.4rem; margin:10px 0; line-height:1.2;">${title}</h2>
+                    <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.2rem;">
+                        Nueva entrada disponible en "CERS o no CERS".
                     </p>
-                    <a href="${link}" target="_blank" class="btn-read">Leer ahora →</a>
+                    <a href="${link}" target="_blank" class="btn-read">Leer artículo →</a>
                 </div>
             </article>`;
-    }
+    };
 
-    // 2. Creamos la petición "especial" que Blogger no bloquea
-    const script = document.createElement('script');
-    script.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
-    document.body.appendChild(script);
+    // 2. Creamos la llamada al blog de forma segura
+    const bloggerScript = document.createElement('script');
+    bloggerScript.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
+    
+    // Si hay un error de red, avisamos al usuario
+    bloggerScript.onerror = function() {
+        document.getElementById('recent-post').innerHTML = "<p>Error al conectar con Blogger.</p>";
+    };
+
+    document.body.appendChild(bloggerScript);
 </script>
 </body>
 </html>
