@@ -76,38 +76,61 @@
         let allPosts = []; // Guardaremos los posts aquí
 
         async function loadFeed() {
-            const container = document.getElementById('blogger-feed');
-            try {
-                const response = await fetch(`${BLOG_URL}/feeds/posts/default?alt=json&max-results=10`);
-                if (!response.ok) throw new Error('No se pudo obtener el feed');
-                
-                const data = await response.json();
-                allPosts = data.feed.entry; // Guardamos los datos completos
-                container.innerHTML = '';
+    const container = document.getElementById('blogger-feed');
+    try {
+        // Añadimos un parámetro de tiempo para evitar que el navegador use una versión vieja (caché)
+        const response = await fetch(`${BLOG_URL}/feeds/posts/default?alt=json&max-results=10&t=${new Date().getTime()}`, {
+            method: 'GET',
+            mode: 'cors', // Forzamos el modo CORS
+        });
 
-                allPosts.forEach((entry, index) => {
-                    const title = entry.title.$t;
-                    
-                    let imgHtml = '🐳'; 
-                    if (entry.media$thumbnail) {
-                        imgHtml = `<img src="${entry.media$thumbnail.url.replace('s72-c', 's1600')}" style="width:100%; height:100%; object-fit:cover;">`;
-                    }
-
-                    container.innerHTML += `
-                        <article class="post-card" onclick="showPost(${index})" style="cursor:pointer;">
-                            <div class="post-img">${imgHtml}</div>
-                            <div class="post-body">
-                                <span class="tag">Blogger</span>
-                                <h2 style="font-size:1.2rem; margin:10px 0;">${title}</h2>
-                                <span class="btn-read">Leer artículo →</span>
-                            </div>
-                        </article>
-                    `;
-                });
-            } catch (e) {
-                container.innerHTML = `<p style="color:var(--accent)">⚠️ Error al cargar el contenido.</p>`;
-            }
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
         }
+        
+        const data = await response.json();
+        
+        // Verificamos si hay entradas
+        if (!data.feed.entry) {
+            container.innerHTML = "<p>No se encontraron publicaciones publicadas.</p>";
+            return;
+        }
+
+        allPosts = data.feed.entry;
+        container.innerHTML = '';
+
+        allPosts.forEach((entry, index) => {
+            const title = entry.title.$t;
+            let imgHtml = '🐳'; 
+            
+            if (entry.media$thumbnail) {
+                // Mejoramos la calidad de la imagen de la miniatura
+                const highResImg = entry.media$thumbnail.url.replace('s72-c', 's1600');
+                imgHtml = `<img src="${highResImg}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+
+            container.innerHTML += `
+                <article class="post-card" onclick="showPost(${index})" style="cursor:pointer;">
+                    <div class="post-img">${imgHtml}</div>
+                    <div class="post-body">
+                        <span class="tag">Blogger</span>
+                        <h2 style="font-size:1.2rem; margin:10px 0;">${title}</h2>
+                        <span class="btn-read">Leer artículo →</span>
+                    </div>
+                </article>
+            `;
+        });
+    } catch (e) {
+        console.error("Error detallado:", e); // Esto te dirá el error real en la consola F12
+        container.innerHTML = `
+            <div style="text-align:center; padding: 2rem; border: 1px dashed var(--accent); border-radius: 12px;">
+                <p style="color:var(--accent); font-weight:bold;">⚠️ Error de conexión</p>
+                <p style="font-size:0.9rem; color:var(--text-secondary)">
+                    Asegúrate de que el blog sea público y no estés abriendo el archivo localmente (usa un servidor local).
+                </p>
+            </div>`;
+    }
+}
 
         function showPost(index) {
             const post = allPosts[index];
