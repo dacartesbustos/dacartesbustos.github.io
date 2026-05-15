@@ -17,50 +17,93 @@
     </nav>
 
     <main class="container">
-        <h1 style="margin-bottom: 3rem;">Archivo de Artículos</h1>
+        <header style="margin-bottom: 3rem; text-align: center;">
+            <h1>Archivo de Artículos</h1>
+            <p style="color: var(--text-secondary)">Explora mis últimas notas sobre ingeniería y tecnología.</p>
+        </header>
+
         <div id="blogger-feed" class="grid-posts">
-            <p>Cargando publicaciones de Blogger...</p>
+            <div class="loading">Cargando publicaciones de Blogger...</div>
         </div>
     </main>
 
     <script>
-        const BLOG_URL = 'https://cersonocers.blogspot.com'; 
-        
+        // Configuración
+        const BLOG_URL = 'https://cersonocers.blogspot.com';
+        const MAX_RESULTS = 9;
+
         async function loadFeed() {
             const container = document.getElementById('blogger-feed');
+            
             try {
-                // Usamos fetch con modo cors explícito
-                const response = await fetch(`${BLOG_URL}/feeds/posts/default?alt=json&max-results=10`);
-                if (!response.ok) throw new Error('No se pudo obtener el feed');
+                // Usamos el feed "summary" que es más ligero para listados
+                const response = await fetch(`${BLOG_URL}/feeds/posts/default?alt=json&max-results=${MAX_RESULTS}`);
+                
+                if (!response.ok) throw new Error('Error al conectar con Blogger');
                 
                 const data = await response.json();
-                container.innerHTML = '';
+                const entries = data.feed.entry;
 
-                data.feed.entry.forEach(entry => {
+                if (!entries || entries.length === 0) {
+                    container.innerHTML = "<p>No se encontraron publicaciones.</p>";
+                    return;
+                }
+
+                container.innerHTML = ''; // Limpiar mensaje de carga
+
+                entries.forEach(entry => {
                     const title = entry.title.$t;
                     const link = entry.link.find(l => l.rel === 'alternate').href;
                     
-                    // Lógica mejorada para imágenes
-                    let imgHtml = '🐳'; 
+                    // Obtener fecha legible
+                    const date = new Date(entry.published.$t).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    // Lógica de imagen: busca la miniatura o usa un placeholder
+                    let imgUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&auto=format&fit=crop'; 
                     if (entry.media$thumbnail) {
-                        imgHtml = `<img src="${entry.media$thumbnail.url.replace('s72-c', 's1600')}" style="width:100%; height:100%; object-fit:cover;">`;
+                        // Cambiamos el tamaño de s72-c a s600 para que no se vea pixelado
+                        imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
+                    } else if (entry.content && entry.content.$t.includes('<img')) {
+                        // Intento extraer la primera imagen del contenido si no hay thumbnail
+                        const match = entry.content.$t.match(/src="([^"]+)"/);
+                        if (match) imgUrl = match;
                     }
+
+                    // Extraer un pequeño resumen (snippet)
+                    const summary = entry.summary ? entry.summary.$t.substring(0, 100) + '...' : 'Haz clic para leer más sobre este artículo.';
 
                     container.innerHTML += `
                         <article class="post-card">
-                            <div class="post-img">${imgHtml}</div>
+                            <div class="post-img">
+                                <img src="${imgUrl}" alt="${title}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
                             <div class="post-body">
-                                <span class="tag">Blogger</span>
-                                <h2 style="font-size:1.2rem; margin:10px 0;">${title}</h2>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span class="tag">Post</span>
+                                    <span style="font-size:0.7rem; color:var(--text-secondary)">${date}</span>
+                                </div>
+                                <h2 style="font-size:1.2rem; margin:0 0 10px 0; line-height:1.3;">${title}</h2>
+                                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.5rem;">${summary}</p>
                                 <a href="${link}" target="_blank" class="btn-read">Leer artículo →</a>
                             </div>
                         </article>
                     `;
                 });
             } catch (e) {
-                container.innerHTML = `<p style="color:var(--accent)">⚠️ Error: Asegúrate de estar usando un servidor (http://) y que el blog sea público.</p>`;
+                console.error(e);
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: var(--bg-card); border-radius: 16px;">
+                        <p style="color:var(--accent); font-size: 1.2rem;">⚠️ No pudimos cargar el blog</p>
+                        <p style="color:var(--text-secondary)">Asegúrate de que el blog en Blogger sea <b>público</b>.</p>
+                        <a href="${BLOG_URL}" target="_blank" class="btn-read" style="display:inline-block; margin-top:1rem;">Ir al blog directamente</a>
+                    </div>`;
             }
         }
+
         loadFeed();
     </script>
 </body>
