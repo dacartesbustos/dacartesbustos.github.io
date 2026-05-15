@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicaciones | CERS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">CERS o no CERS</div>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="publicaciones.html" class="active">Publicaciones</a></li>
+            <li><a href="eventos.html">Eventos</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <h1 style="margin-bottom: 3rem;">Archivo de Artículos</h1>
+        <div id="blogger-feed" class="grid-posts">
+            <p>Cargando publicaciones de Blogger...</p>
+        </div>
+    </main>
+
+    <script>
+        const BLOG_URL = 'https://cersonocers.blogspot.com'; 
+        
+        async function loadFeed() {
+            const container = document.getElementById('blogger-feed');
+            try {
+                // Usamos fetch con modo cors explícito
+                const response = await fetch(`${BLOG_URL}/feeds/posts/default?alt=json&max-results=10`);
+                if (!response.ok) throw new Error('No se pudo obtener el feed');
+                
+                const data = await response.json();
+                container.innerHTML = '';
+
+                data.feed.entry.forEach(entry => {
+                    const title = entry.title.$t;
+                    const link = entry.link.find(l => l.rel === 'alternate').href;
+                    
+                    // Lógica mejorada para imágenes
+                    let imgHtml = '🐳'; 
+                    if (entry.media$thumbnail) {
+                        imgHtml = `<img src="${entry.media$thumbnail.url.replace('s72-c', 's1600')}" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
+
+                    container.innerHTML += `
+                        <article class="post-card">
+                            <div class="post-img">${imgHtml}</div>
+                            <div class="post-body">
+                                <span class="tag">Blogger</span>
+                                <h2 style="font-size:1.2rem; margin:10px 0;">${title}</h2>
+                                <a href="${link}" target="_blank" class="btn-read">Leer artículo →</a>
+                            </div>
+                        </article>
+                    `;
+                });
+            } catch (e) {
+                container.innerHTML = `<p style="color:var(--accent)">⚠️ Error: Asegúrate de estar usando un servidor (http://) y que el blog sea público.</p>`;
+            }
+        }
+        loadFeed();
+    </script>
+</body>
+</html>

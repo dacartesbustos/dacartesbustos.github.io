@@ -1,0 +1,128 @@
+/* Paleta Profesional de Azules Oscuros */
+:root {
+    --bg-deep: #020617;
+    --bg-card: #1e293b;
+    --accent: #38bdf8;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border: #334155;
+    --nav-height: 70px;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.6;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10%;
+    height: var(--nav-height);
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav .logo {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--accent);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+    color: var(--text-primary);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 20px;
+}
+
+.hero {
+    padding: 5rem 1rem;
+    text-align: center;
+    background: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    background: linear-gradient(to right, #f8fafc, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Sistema de Tarjetas Dinámicas */
+.grid-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.post-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.post-img {
+    width: 100%;
+    height: 180px;
+    background: #0f172a;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-body {
+    padding: 1.5rem;
+}
+
+.tag {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.btn-read {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Calendario */
+.calendar-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    filter: invert(0.9) hue-rotate(180deg);
+}
