@@ -19,11 +19,11 @@
     <main class="container">
     <div id="view-list">
         <header style="margin-bottom: 3rem; text-align: center;">
-            <h1>Archivo de Artículos</h1>
-            <p style="color: var(--text-secondary)">Explora mis últimas notas sobre ingeniería y tecnología.</p>
+            <h1>Post de Artículos</h1>
+            <p style="color: var(--text-secondary)">Explora mis últimas notas sobre mi andanzas en la Fe.</p>
         </header>
         <div id="blogger-feed" class="grid-posts">
-            <div class="loading">Cargando publicaciones...</div>
+            <div class="loading">😙🎶 Cargando publicaciones...</div>
         </div>
     </div>
 
@@ -42,7 +42,7 @@ function handleBloggerData(data) {
     const entries = data.feed.entry;
 
     if (!entries) {
-        container.innerHTML = "<p>No se encontraron publicaciones.</p>";
+        container.innerHTML = "<p>😱 No se encontraron publicaciones.</p>";
         return;
     }
 
