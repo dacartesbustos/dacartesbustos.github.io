@@ -40,46 +40,46 @@
         </div>
     </main>
 
-    <script>
-    <script>
-    // 1. Esta función se ejecuta automáticamente cuando Blogger responde
+<script>
+    // 1. Esta función se activa cuando Blogger responde con los datos
     function handleRecentPost(data) {
         const container = document.getElementById('recent-post');
         
-        // Verificamos si hay publicaciones
+        // Verificamos si existen entradas
         if (!data.feed.entry || data.feed.entry.length === 0) {
             container.innerHTML = "<p>No hay publicaciones recientes.</p>";
             return;
         }
 
-        const entry = data.feed.entry; // Tomamos solo la más reciente
+        const entry = data.feed.entry; // Tomamos solo la publicación más reciente
         const title = entry.title.$t;
         const link = entry.link.find(l => l.rel === 'alternate').href;
         
-        // Buscamos la imagen (si no tiene, usamos una de respaldo)
+        // Buscamos la imagen (o usamos una por defecto si no hay)
         let imgUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&auto=format&fit=crop';
         if (entry.media$thumbnail) {
+            // Mejoramos la calidad de la miniatura de Blogger
             imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
         }
 
-        // Inyectamos el contenido en el HTML
+        // Construimos la tarjeta visualmente igual a la página de publicaciones
         container.innerHTML = `
             <article class="post-card">
                 <div class="post-img" style="height: 200px; overflow: hidden;">
                     <img src="${imgUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div class="post-body">
-                    <span class="tag">Novedad</span>
+                    <span class="tag">Nueva entrada</span>
                     <h2 style="font-size:1.4rem; margin:10px 0;">${title}</h2>
                     <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.5rem;">
-                        He publicado un nuevo artículo en el blog. Haz clic abajo para leerlo completo.
+                        He publicado un nuevo artículo en mi blog. Puedes leerlo haciendo clic en el botón de abajo.
                     </p>
                     <a href="${link}" target="_blank" class="btn-read">Leer ahora →</a>
                 </div>
             </article>`;
     }
 
-    // 2. Llamada técnica a Blogger (esto evita el error de "Cargando...")
+    // 2. Creamos la petición "especial" que Blogger no bloquea
     const script = document.createElement('script');
     script.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
     document.body.appendChild(script);
