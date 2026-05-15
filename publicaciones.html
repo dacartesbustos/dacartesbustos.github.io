@@ -17,15 +17,22 @@
     </nav>
 
     <main class="container">
+    <div id="view-list">
         <header style="margin-bottom: 3rem; text-align: center;">
             <h1>Archivo de Artículos</h1>
             <p style="color: var(--text-secondary)">Explora mis últimas notas sobre ingeniería y tecnología.</p>
         </header>
-
         <div id="blogger-feed" class="grid-posts">
-            <div class="loading">Cargando publicaciones de Blogger...</div>
+            <div class="loading">Cargando publicaciones...</div>
         </div>
-    </main>
+    </div>
+
+    <div id="view-post" style="display: none; max-width: 800px; margin: 0 auto;">
+        <button onclick="closePost()" class="btn-read" style="margin-bottom: 2rem; cursor: pointer;">← Volver a la lista</button>
+        <article id="post-full-content" class="post-content-detail">
+            </article>
+    </div>
+</main>
 
     <script>
         const BLOG_URL = 'https://cersonocers.blogspot.com';
