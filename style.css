@@ -126,3 +126,20 @@ nav a:hover, nav a.active {
     border: 1px solid var(--border);
     filter: invert(0.9) hue-rotate(180deg);
 }
+/* Estilos para el post abierto */
+.entry-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.entry-content p {
+    margin-bottom: 1.5rem;
+}
+
+.entry-content iframe { /* Para videos de Youtube que pongas en el blog */
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+}
