@@ -50,7 +50,7 @@ function handleBloggerData(data) {
     entries.forEach(entry => {
         const title = entry.title.$t;
         const link = entry.link.find(l => l.rel === 'alternate').href;
-        let imgUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=500&auto=format&fit=crop';
+        let imgUrl = 'https://www.tumblr.com/cersonocers/816714450151374848/pastelitos-que-vendian-en-una-panaderia';
         
         if (entry.media$thumbnail) {
             imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
