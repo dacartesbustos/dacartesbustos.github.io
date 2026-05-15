@@ -50,7 +50,7 @@ function handleBloggerData(data) {
     entries.forEach(entry => {
         const title = entry.title.$t;
         const link = entry.link.find(l => l.rel === 'alternate').href;
-        let imgUrl = 'https://www.tumblr.com/cersonocers/816714450151374848/pastelitos-que-vendian-en-una-panaderia';
+        let imgUrl = 'https://64.media.tumblr.com/e7a1a79a940ec23ef8f186f14d73f76e/37a751c2206ad5e8-b3/s2048x3072/cec84e60c02859f257e427f3f5936458585498fd.jpg';
         
         if (entry.media$thumbnail) {
             imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
