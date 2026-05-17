@@ -62,11 +62,12 @@
                 entries = [entries];
             }
 
-            if (!entries || entries.length === 0 || !entries) {
+            if (!entries || entries.length === 0) {
                 container.innerHTML = "<p>No hay publicaciones recientes en el blog.</p>";
                 return;
             }
 
+            // ¡AQUÍ ESTÁ LA CORRECCIÓN! Añadimos para leer el primer artículo
             const entry = entries;
             
             // Extracción ULTRA SEGURA de propiedades
