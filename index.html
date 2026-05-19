@@ -137,7 +137,7 @@
 
     // Llamada segura a Blogger
     const bloggerScript = document.createElement('script');
-    bloggerScript.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
+    bloggerScript.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=7';
     
     bloggerScript.onerror = function() {
         document.getElementById('recent-post').innerHTML = "<p>Error al conectar con Blogger.</p>";
