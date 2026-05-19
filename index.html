@@ -41,55 +41,53 @@
     </main>
 
 <script>
-    // 1. Definimos la función globalmente para que Blogger la encuentre
     window.handleRecentPost = function(data) {
         const container = document.getElementById('recent-post');
-        
-        // Esto nos servirá para espiar los datos reales en la consola del navegador (F12)
-        console.log("Datos crudos recibidos de Blogger:", data);
+        console.log("Datos crudos de Blogger:", data);
 
         try {
-            // Validación inicial del feed
-            if (!data || !data.feed) {
-                container.innerHTML = "<p>No se recibió una respuesta válida de Blogger.</p>";
+            if (!data || !data.feed || !data.feed.entry) {
+                container.innerHTML = "<p>No hay publicaciones recientes.</p>";
                 return;
             }
 
-            // A veces, si hay un solo resultado, ciertos entornos no lo detectan como array.
-            // Forzamos a que sea una lista para evitar errores.
-            let entries = data.feed.entry;
-            if (entries && !Array.isArray(entries)) {
-                entries = [entries];
-            }
-
-            if (!entries || entries.length === 0) {
-                container.innerHTML = "<p>No hay publicaciones recientes en el blog.</p>";
+            // CORRECCIÓN: Si es un array, tomamos el primer elemento
+            const entry = Array.isArray(data.feed.entry) ? data.feed.entry : data.feed.entry;
+            
+            if (!entry) {
+                container.innerHTML = "<p>No se encontró ninguna publicación.</p>";
                 return;
             }
 
-            // ¡AQUÍ ESTÁ LA CORRECCIÓN! Añadimos para leer el primer artículo
-            const entry = entries;
+            // 1. Obtener el título real
+            const title = (entry.title && entry.title.$t) ? entry.title.$t : 'Nueva publicación';
             
-            // Extracción ULTRA SEGURA de propiedades
-            // 1. Título
-            const title = (entry.title && entry.title.$t) ? entry.title.$t : 'Publicación sin título';
-            
-            // 2. Enlace (Verificamos paso a paso que exista el array de links y el rel 'alternate')
-            let link = '#';
+            // 2. Obtener el enlace con múltiples alternativas de rescate
+            let link = '';
             if (entry.link && Array.isArray(entry.link)) {
-                const foundLink = entry.link.find(l => l.rel === 'alternate');
-                if (foundLink && foundLink.href) {
-                    link = foundLink.href;
+                // Intento 1: Buscar el enlace "alternate" (el post original en Blogger)
+                const alternateLink = entry.link.find(l => l.rel === 'alternate');
+                if (alternateLink && alternateLink.href) {
+                    link = alternateLink.href;
+                } else {
+                    // Intento 2: Si no existe 'alternate', busca cualquier link válido
+                    const anyValidLink = entry.link.find(l => l.href && l.href.startsWith('http'));
+                    if (anyValidLink) link = anyValidLink.href;
                 }
             }
             
-            // 3. Imagen de portada (Placeholder si no hay imagen o si falla la propiedad)
+            // Intento 3: Si todo lo anterior falló, redirige al home del blog
+            if (!link || link === '#') {
+                link = 'https://cersonocers.blogspot.com';
+            }
+            
+            // 3. Obtener la imagen de portada
             let imgUrl = 'https://64.media.tumblr.com/e7a1a79a940ec23ef8f186f14d73f76e/37a751c2206ad5e8-b3/s2048x3072/cec84e60c02859f257e427f3f5936458585498fd.jpg';
             if (entry.media$thumbnail && entry.media$thumbnail.url) {
                 imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
             }
 
-            // Inyectamos el diseño en el HTML de forma segura
+            // Renderizado final en el HTML
             container.innerHTML = `
                 <article class="post-card">
                     <div class="post-img" style="height: 200px; overflow: hidden;">
@@ -106,19 +104,17 @@
                 </article>`;
                 
         } catch (error) {
-            // Si algo vuelve a fallar, la consola nos dirá la línea exacta del error
-            console.error("Error específico al procesar la publicación:", error);
-            container.innerHTML = "<p>Error al formatear la última publicación.</p>";
+            console.error("Error al procesar el diseño:", error);
+            container.innerHTML = "<p>Error al mostrar la última publicación.</p>";
         }
     };
 
-    // 2. Creamos la llamada al blog de forma segura
+    // Llamada segura a Blogger
     const bloggerScript = document.createElement('script');
     bloggerScript.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
     
-    // Si hay un error de red o bloqueo de CORS, avisamos al usuario
     bloggerScript.onerror = function() {
-        document.getElementById('recent-post').innerHTML = "<p>Error al conectar con los servidores de Blogger.</p>";
+        document.getElementById('recent-post').innerHTML = "<p>Error al conectar con Blogger.</p>";
     };
 
     document.body.appendChild(bloggerScript);
