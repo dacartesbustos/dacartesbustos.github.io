@@ -20,22 +20,19 @@
     <main class="container">
         <header style="margin-bottom: 3rem; text-align: center;">
             <h1>Mis Episodios Favoritos</h1>
-            <p style="color: var(--text-secondary)">Explora mi actividad y contenidos guardados directamente en la plataforma.</p>
+            <p style="color: var(--text-secondary)">Explora la selección de capítulos guardados desde mi cuenta.</p>
         </header>
 
-        <div style="text-align: center; margin-top: 2rem;">
-            <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 3rem; border-radius: 16px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-                <span style="font-size: 3.5rem; display: block; margin-bottom: 1rem;">🎧</span>
-                <h2 style="margin-bottom: 1rem; font-size: 1.6rem;">Escucha en Spotify</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">
-                    Debido a las políticas de privacidad de la plataforma, mi lista de episodios guardados no puede incrustarse directamente de forma externa. Puedes seguir mi actividad haciendo clic abajo.
-                </p>
-                <a href="https://open.spotify.com/user/314yal5qofbbqbhs53drcsie7svi" 
-                   target="_blank" 
-                   style="display: inline-block; background: #1DB954; color: #ffffff; text-decoration: none; padding: 0.9rem 2.2rem; border-radius: 30px; font-weight: bold; transition: transform 0.2s, background-color 0.2s; box-shadow: 0 4px 15px rgba(29, 185, 84, 0.25);">
-                   Abrir mi perfil de Spotify →
-                </a>
-            </div>
+        <div class="spotify-container">
+            <iframe style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/playlist/37i9dQZF1F5p3rmiWPIYgZ?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="400" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy">
+            </iframe>
         </div>
     </main>
 </body>
