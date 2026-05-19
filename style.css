@@ -156,3 +156,79 @@ nav a:hover, nav a.active {
 .spotify-container iframe {
     filter: none !important;
 }
+/* ==========================================================================
+   OPTIMIZACIÓN PARA DISPOSITIVOS MÓVILES (CELULARES Y TABLETS)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Ajustes generales del contenedor */
+    .container {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Menú de Navegación Responsivo */
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.2rem;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav a {
+        font-size: 0.95rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    /* Ajuste de Encabezados (Hero) */
+    .hero {
+        padding: 2.5rem 1rem;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    /* Estructura Principal de index.html (Pasa de 2 columnas a 1 columna) */
+    main.container > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    /* Ajuste en los grids de las publicaciones */
+    .grid-posts {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Tarjetas de artículos adaptadas */
+    .post-card {
+        margin-bottom: 0;
+    }
+
+    .post-img {
+        height: 160px;
+    }
+
+    /* Marcos de Google Calendar y Spotify */
+    .calendar-frame, .spotify-container {
+        height: auto !important;
+        max-width: 100%;
+    }
+
+    /* Forzar que los iframes mantengan proporciones legibles */
+    .calendar-frame iframe {
+        height: 450px !important;
+    }
+}
