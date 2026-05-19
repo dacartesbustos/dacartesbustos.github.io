@@ -143,3 +143,16 @@ nav a:hover, nav a.active {
     aspect-ratio: 16/9;
     border-radius: 8px;
 }
+/* Contenedor para el Podcast de Spotify */
+.spotify-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: transparent;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Forzar que el iframe de Spotify no se invierta si usas filtros globales */
+.spotify-container iframe {
+    filter: none !important;
+}
