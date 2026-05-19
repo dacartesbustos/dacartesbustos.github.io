@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | CERS</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <nav>
-    <div class="logo">📖 CERS o no CERS</div>
-    <ul>
-        <li><a href="index.html" class="active">Inicio</a></li>
-        <li><a href="publicaciones.html">Publicaciones</a></li>
-        <li><a href="eventos.html">Eventos</a></li>
-        <li><a href="podcast.html">Podcast</a></li> </ul>
-    </nav>
-
-    <header class="hero">
-        <h1>Proyecto web personal</h1>
-        <p style="color: var(--text-secondary)">Gestión y desarrollo web.</p>
-    </header>
-
-    <main class="container">
+<main class="container">
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2.5rem;">
             <section>
                 <h2 style="margin-bottom: 2rem;">✍️ Última Publicación</h2>
@@ -38,86 +15,45 @@
                 </div>
             </aside>
         </div>
-    </main>
 
-<script>
-    window.handleRecentPost = function(data) {
-        const container = document.getElementById('recent-post');
-        console.log("Datos crudos de Blogger:", data);
+        <section style="margin-top: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>🎙️ Últimos Podcasts Subidos</h2>
+                <a href="podcast.html" class="btn-read" style="color: var(--accent); font-size: 1rem;">Ver todos →</a>
+            </div>
 
-        try {
-            if (!data || !data.feed || !data.feed.entry) {
-                container.innerHTML = "<p>No hay publicaciones recientes.</p>";
-                return;
-            }
-
-            // CORRECCIÓN: Si es un array, tomamos el primer elemento
-            const entry = Array.isArray(data.feed.entry) ? data.feed.entry : data.feed.entry;
-            
-            if (!entry) {
-                container.innerHTML = "<p>No se encontró ninguna publicación.</p>";
-                return;
-            }
-
-            // 1. Obtener el título real
-            const title = (entry.title && entry.title.$t) ? entry.title.$t : 'Nueva publicación';
-            
-            // 2. Obtener el enlace con múltiples alternativas de rescate
-            let link = '';
-            if (entry.link && Array.isArray(entry.link)) {
-                // Intento 1: Buscar el enlace "alternate" (el post original en Blogger)
-                const alternateLink = entry.link.find(l => l.rel === 'alternate');
-                if (alternateLink && alternateLink.href) {
-                    link = alternateLink.href;
-                } else {
-                    // Intento 2: Si no existe 'alternate', busca cualquier link válido
-                    const anyValidLink = entry.link.find(l => l.href && l.href.startsWith('http'));
-                    if (anyValidLink) link = anyValidLink.href;
-                }
-            }
-            
-            // Intento 3: Si todo lo anterior falló, redirige al home del blog
-            if (!link || link === '#') {
-                link = 'https://cersonocers.blogspot.com';
-            }
-            
-            // 3. Obtener la imagen de portada
-            let imgUrl = 'https://64.media.tumblr.com/e7a1a79a940ec23ef8f186f14d73f76e/37a751c2206ad5e8-b3/s2048x3072/cec84e60c02859f257e427f3f5936458585498fd.jpg';
-            if (entry.media$thumbnail && entry.media$thumbnail.url) {
-                imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
-            }
-
-            // Renderizado final en el HTML
-            container.innerHTML = `
+            <div class="grid-posts">
                 <article class="post-card">
-                    <div class="post-img" style="height: 200px; overflow: hidden;">
-                        <img src="${imgUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;">
+                    <div class="post-img">
+                        <img src="https://semperfiat.com/upload/6223751596679127.jpg" alt="Portada Padres del Desierto">
                     </div>
                     <div class="post-body">
-                        <span class="tag">Lo más reciente</span>
-                        <h2 style="font-size:1.4rem; margin:10px 0; line-height:1.2;">${title}</h2>
-                        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.2rem;">
-                            Nueva entrada disponible en "CERS o no CERS".
+                        <span class="tag">Espiritualidad / Fe</span>
+                        <h2 style="font-size:1.3rem; margin:10px 0;">Los Padres del Desierto, por el misionero laico Cristian Huerta</h2>
+                        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.5rem;">
+                            Una serie de episodios fenomenales de consagrados que transformaron nuestra Iglesia después de la persecución.
                         </p>
-                        <a href="${link}" target="_blank" class="btn-read">Leer artículo →</a>
+                        <a href="https://open.spotify.com/playlist/2XFUKK0RYa1ZbNK5NkOBmR?si=808f5ca7becd4b1c" target="_blank" class="btn-read" style="color: #38bdf8;">
+                            Escuchar en Spotify →
+                        </a>
                     </div>
-                </article>`;
-                
-        } catch (error) {
-            console.error("Error al procesar el diseño:", error);
-            container.innerHTML = "<p>Error al mostrar la última publicación.</p>";
-        }
-    };
+                </article>
 
-    // Llamada segura a Blogger
-    const bloggerScript = document.createElement('script');
-    bloggerScript.src = 'https://cersonocers.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleRecentPost&max-results=1';
-    
-    bloggerScript.onerror = function() {
-        document.getElementById('recent-post').innerHTML = "<p>Error al conectar con Blogger.</p>";
-    };
-
-    document.body.appendChild(bloggerScript);
-</script>
-</body>
-</html>
+                <article class="post-card">
+                    <div class="post-img">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop" alt="Portada Próximo Podcast">
+                    </div>
+                    <div class="post-body">
+                        <span class="tag">Cultura / Reflexión</span>
+                        <h2 style="font-size:1.3rem; margin:10px 0;">Próximo Episodio</h2>
+                        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.5rem;">
+                            Aquí podrás añadir manualmente tu segundo podcast más reciente copiando el mismo formato.
+                        </p>
+                        <a href="podcast.html" class="btn-read" style="color: #38bdf8;">
+                            Ir al Podcast →
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
