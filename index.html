@@ -83,24 +83,55 @@
     </main>
 
 <script>
-    function handleRecentPost(data) {
+    window.handleRecentPost = function(data) {
         const container = document.getElementById('recent-post');
+        console.log("Datos crudos de Blogger:", data);
+
         try {
-            const entry = data.feed.entry;
-            if (!entry) {
+            if (!data || !data.feed || !data.feed.entry) {
                 container.innerHTML = "<p>No hay publicaciones recientes.</p>";
                 return;
             }
-            const title = entry.title.$t;
-            const link = entry.link.find(l => l.rel === 'alternate').href;
-            let imgUrl = 'https://64.media.tumblr.com/e7a1a79a940ec23ef8f186f14d73f76e/37a751c2206ad5e8-b3/s2048x3072/cec84e60c02859f257e427f3f5936458585498fd.jpg';
+
+            // CORRECCIÓN: Si es un array, tomamos el primer elemento
+            const entry = Array.isArray(data.feed.entry) ? data.feed.entry : data.feed.entry;
             
-            if (entry.media$thumbnail) {
-                imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
+            if (!entry) {
+                container.innerHTML = "<p>No se encontró ninguna publicación.</p>";
+                return;
+            }
+
+            // 1. Obtener el título real
+            const title = (entry.title && entry.title.$t) ? entry.title.$t : 'Nueva publicación';
+            
+            // 2. Obtener el enlace con múltiples alternativas de rescate
+            let link = '';
+            if (entry.link && Array.isArray(entry.link)) {
+                // Intento 1: Buscar el enlace "alternate" (el post original en Blogger)
+                const alternateLink = entry.link.find(l => l.rel === 'alternate');
+                if (alternateLink && alternateLink.href) {
+                    link = alternateLink.href;
+                } else {
+                    // Intento 2: Si no existe 'alternate', busca cualquier link válido
+                    const anyValidLink = entry.link.find(l => l.href && l.href.startsWith('http'));
+                    if (anyValidLink) link = anyValidLink.href;
+                }
             }
             
+            // Intento 3: Si todo lo anterior falló, redirige al home del blog
+            if (!link || link === '#') {
+                link = 'https://cersonocers.blogspot.com';
+            }
+            
+            // 3. Obtener la imagen de portada
+            let imgUrl = 'https://64.media.tumblr.com/e7a1a79a940ec23ef8f186f14d73f76e/37a751c2206ad5e8-b3/s2048x3072/cec84e60c02859f257e427f3f5936458585498fd.jpg';
+            if (entry.media$thumbnail && entry.media$thumbnail.url) {
+                imgUrl = entry.media$thumbnail.url.replace('/s72-c/', '/s600/');
+            }
+
+            // Renderizado final en el HTML
             container.innerHTML = `
-              <article class="post-card">
+                <article class="post-card">
                     <div class="post-img" style="height: 200px; overflow: hidden;">
                         <img src="${imgUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;">
                     </div>
